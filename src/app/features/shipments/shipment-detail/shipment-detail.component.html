@@ -1,1 +1,170 @@
-<p>shipment-detail works!</p>
+<app-navbar></app-navbar>
+
+<div class="container">
+  <div class="header">
+    <h1>Detalle del Envío</h1>
+    <div class="header-buttons">
+      <button class="btn btn-secondary" (click)="goBack()">← Volver</button>
+      <button class="btn btn-primary" (click)="editShipment()">Editar</button>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p class="text-center">Cargando información del envío...</p>
+  </div>
+
+  <div *ngIf="!loading && shipment">
+    <div class="card">
+      <h2>Información General</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>ID:</label>
+          <span>{{ shipment.id }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Número de Seguimiento:</label>
+          <span class="highlight">{{ shipment.tracking_number }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Estado:</label>
+          <span class="badge" [class.badge-success]="shipment.is_active" [class.badge-danger]="!shipment.is_active">
+            {{ shipment.is_active ? 'Activo' : 'Inactivo' }}
+          </span>
+        </div>
+        <div class="detail-item">
+          <label>Estado del Envío:</label>
+          <span>{{ shipment.status }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Información de Transporte</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Origen:</label>
+          <span>{{ shipment.origin }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Destino:</label>
+          <span>{{ shipment.destination }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Placa del Vehículo:</label>
+          <span>{{ shipment.plate || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Peso (kg):</label>
+          <span>{{ shipment.weight || 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Información RNDC</h2>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Remesa:</label>
+          <span>{{ shipment.remesa || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Manifiesto:</label>
+          <span>{{ shipment.manifiesto || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Fecha Manifiesto:</label>
+          <span>{{ shipment.date_manifiesto || 'N/A' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Precio Declarado:</label>
+          <span>{{ shipment.declared_price ? ('$' + shipment.declared_price) : 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Conductor</h2>
+      <div class="detail-grid" *ngIf="shipment.conductor">
+        <div class="detail-item">
+          <label>Nombre:</label>
+          <span>{{ shipment.conductor.third_name }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo de Documento:</label>
+          <span>{{ shipment.conductor.document_type }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo:</label>
+          <span>{{ shipment.conductor.third_type }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Dirección:</label>
+          <span>{{ shipment.conductor.third_address }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Remitente</h2>
+      <div class="detail-grid" *ngIf="shipment.remitente">
+        <div class="detail-item">
+          <label>Nombre:</label>
+          <span>{{ shipment.remitente.third_name }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo de Documento:</label>
+          <span>{{ shipment.remitente.document_type }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Dirección:</label>
+          <span>{{ shipment.remitente.third_address }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Destinatario</h2>
+      <div class="detail-grid" *ngIf="shipment.destinatario">
+        <div class="detail-item">
+          <label>Nombre:</label>
+          <span>{{ shipment.destinatario.third_name }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo de Documento:</label>
+          <span>{{ shipment.destinatario.document_type }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Dirección:</label>
+          <span>{{ shipment.destinatario.third_address }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mercancía</h2>
+      <div class="detail-grid" *ngIf="shipment.mercancia">
+        <div class="detail-item">
+          <label>Nombre:</label>
+          <span>{{ shipment.mercancia.mercan_name }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Tipo:</label>
+          <span>{{ shipment.mercancia.mercan_type }}</span>
+        </div>
+        <div class="detail-item">
+          <label>ID RNDC:</label>
+          <span>{{ shipment.mercancia.mercan_rndc_id }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Calificación:</label>
+          <span>{{ shipment.mercancia.mercan_califi }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="shipment.observation">
+      <h2>Observaciones</h2>
+      <p>{{ shipment.observation }}</p>
+    </div>
+  </div>
+</div>
