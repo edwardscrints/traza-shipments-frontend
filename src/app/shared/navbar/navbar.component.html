@@ -1,1 +1,15 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <a routerLink="/shipments">
+        📦 Traza Shipments
+      </a>
+    </div>
+    <div class="navbar-menu" *ngIf="currentUser">
+      <span class="user-info">👤 {{ currentUser.name }}</span>
+      <button class="btn btn-danger btn-logout" (click)="logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</nav>
