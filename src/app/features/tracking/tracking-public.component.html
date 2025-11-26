@@ -1,0 +1,199 @@
+<div class="tracking-container">
+  <!-- HEADER PÚBLICO -->
+  <div class="tracking-header">
+    <div class="logo">
+      <h1>🚚Rastrea tu Pedido </h1>
+      <p>Garantiza la entrega a tiempo</p>
+    </div>
+  </div>
+
+  <!-- FORMULARIO DE BÚSQUEDA -->
+  <div class="search-section">
+    <div class="search-card">
+      <h2>🔍 Rastrea tu Envío</h2>
+      <p class="subtitle">Ingresa numero de seguimiento ó remesa para ver el estado de tu envío</p>
+      <p class="subtitle">ALgunos envios son TRK-0707-wvlj - TRK-8414-czjx - TRK-1505-lysf</p>
+
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="trackingNumber"
+          (keyup.enter)="searchShipment()"
+          placeholder="Ej: TRK-001"
+          class="search-input"
+          [disabled]="loading">
+        
+        <button 
+          class="btn-search" 
+          (click)="searchShipment()"
+          [disabled]="loading || !trackingNumber.trim()">
+          {{ loading ? '⏳ Buscando...' : '🔍 Buscar' }}
+        </button>
+
+        <button 
+          class="btn-clear" 
+          (click)="clearSearch()"
+          *ngIf="trackingNumber"
+          [disabled]="loading">
+          ✖️ Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENSAJE DE ERROR -->
+  <div class="error-box" *ngIf="errorMessage && searched">
+    <div class="error-content">
+      <span class="error-icon">⚠️</span>
+      <span class="error-text">{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- SPINNER DE CARGA -->
+  <div class="loading-box" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Buscando tu envío...</p>
+  </div>
+
+  <!-- DETALLES DEL ENVÍO -->
+  <div class="shipment-details" *ngIf="shipment && !loading">
+    <!-- ESTADO PRINCIPAL -->
+    <div class="status-card" [ngClass]="getStatusClass(shipment.status)">
+      <div class="status-icon">{{ getStatusIcon(shipment.status) }}</div>
+      <div class="status-info">
+        <div class="status-header">
+          <h3>{{ shipment.status }}</h3>
+          <span class="active-badge" [class.active]="shipment.is_active" [class.inactive]="!shipment.is_active">
+            {{ shipment.is_active ? '✓ Activo' : '✗ Inactivo' }}
+          </span>
+        </div>
+        <p class="tracking-label">Número de Seguimiento:</p>
+        <p class="tracking-value">{{ shipment.tracking_number }}</p>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN DE RUTA -->
+    <div class="info-card">
+      <h3>📍 Información de Ruta</h3>
+      <div class="route-visual">
+        <div class="route-point">
+          <span class="route-icon">🏢</span>
+          <div class="route-details">
+            <p class="route-label">Origen</p>
+            <p class="route-value">{{ shipment.origin }}</p>
+          </div>
+        </div>
+        
+        <div class="route-line"></div>
+        
+        <div class="route-point">
+          <span class="route-icon">📍</span>
+          <div class="route-details">
+            <p class="route-label">Destino</p>
+            <p class="route-value">{{ shipment.destination }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN DE TRANSPORTE -->
+    <div class="info-card" *ngIf="shipment.plate || shipment.conductor">
+      <h3>🚛 Información de Transporte</h3>
+      <div class="info-grid">
+        <div class="info-item" *ngIf="shipment.conductor">
+          <span class="info-label">Conductor:</span>
+          <span class="info-value">{{ shipment.conductor.third_name }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.plate">
+          <span class="info-label">Placa del Vehículo:</span>
+          <span class="info-value plate">{{ shipment.plate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN RNDC -->
+    <div class="info-card" *ngIf="shipment.remesa || shipment.manifiesto || shipment.weight">
+      <h3>📋 Información RNDC</h3>
+      <div class="info-grid">
+        <div class="info-item" *ngIf="shipment.remesa">
+          <span class="info-label">Remesa:</span>
+          <span class="info-value">{{ shipment.remesa }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.manifiesto">
+          <span class="info-label">Manifiesto:</span>
+          <span class="info-value">{{ shipment.manifiesto }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.date_manifiesto">
+          <span class="info-label">Fecha Manifiesto:</span>
+          <span class="info-value">{{ shipment.date_manifiesto | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.weight">
+          <span class="info-label">Peso:</span>
+          <span class="info-value">{{ shipment.weight }} kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARTICIPANTES -->
+    <div class="info-card">
+      <h3>👥 Información de tu Pedido</h3>
+      <div class="info-grid">
+        <div class="info-item" *ngIf="shipment.remitente">
+          <span class="info-label">Remitente:</span>
+          <span class="info-value">{{ shipment.remitente.third_name }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.destinatario">
+          <span class="info-label">Destinatario:</span>
+          <span class="info-value">{{ shipment.destinatario.third_name }}</span>
+        </div>
+        <div class="info-item" *ngIf="shipment.mercancia">
+          <span class="info-label">Mercancía:</span>
+          <span class="info-value">{{ shipment.mercancia.mercan_name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBSERVACIONES -->
+    <div class="info-card" *ngIf="shipment.observation">
+      <h3>📝 Observaciones</h3>
+      <p class="observation-text">{{ shipment.observation }}</p>
+    </div>
+
+    <!-- RECIBIR POR EMAIL -->
+    <div class="info-card email-card">
+      <h3>📧 Si deseas enviar la trazabilidad de tu remesa registra tu correo aqui</h3>
+      <p class="email-subtitle">Enviaremos los detalles de este envío a tu correo electrónico</p>
+      
+      <div class="email-form">
+        <input 
+          type="email" 
+          placeholder="zona_logistica@zonlog.com"
+          class="email-input"
+          [(ngModel)]="userEmail">
+        
+        <button 
+          class="btn-send-email" 
+          disabled
+          title="Funcionalidad disponible próximamente">
+          📧 Enviar por Email
+        </button>
+      </div>
+      
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="action-section">
+      <button class="btn-print" (click)="printShipmentDetails()" title="Imprimir información del envío">
+        🖨️ Imprimir
+      </button>
+      <button class="btn-new-search" (click)="clearSearch()">
+        🔍 Buscar Otro Envío
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="tracking-footer">
+    <p>¿Tienes una cuenta? <a routerLink="/login">Iniciar Sesión</a></p>
+  </div>
+</div>
