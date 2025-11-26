@@ -1,1 +1,83 @@
-<p>shipment-list works!</p>
+<app-navbar></app-navbar>
+
+<div class="container">
+  <div class="header">
+    <h1>Gestión de Envíos</h1>
+    <button class="btn btn-primary" routerLink="/shipments/create">
+      + Nuevo Envío
+    </button>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p class="text-center">Cargando envíos...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && shipments.length === 0">
+    <p class="text-center">No hay envíos registrados</p>
+  </div>
+
+  <div class="table-container" *ngIf="!loading && shipments.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Número de Seguimiento</th>
+          <th>Conductor</th>
+          <th>Remitente</th>
+          <th>Destinatario</th>
+          <th>Mercancía</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let shipment of shipments">
+          <td>{{ shipment.id }}</td>
+          <td>{{ shipment.tracking_number }}</td>
+          <td>{{ shipment.conductor?.third_name || 'N/A' }}</td>
+          <td>{{ shipment.remitente?.third_name || 'N/A' }}</td>
+          <td>{{ shipment.destinatario?.third_name || 'N/A' }}</td>
+          <td>{{ shipment.mercancia?.mercan_name || 'N/A' }}</td>
+          <td>
+            <span class="badge" [class.badge-success]="shipment.is_active" [class.badge-danger]="!shipment.is_active">
+              {{ shipment.is_active ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-sm btn-secondary" (click)="viewShipment(shipment.id)" title="Ver detalles">
+                👁️
+              </button>
+              <button class="btn btn-sm btn-primary" (click)="editShipment(shipment.id)" title="Editar">
+                ✏️
+              </button>
+              <button 
+                class="btn btn-sm" 
+                [class.btn-warning]="shipment.is_active"
+                [class.btn-success]="!shipment.is_active"
+                (click)="toggleActive(shipment)" 
+                [title]="shipment.is_active ? 'Desactivar' : 'Activar'">
+                {{ shipment.is_active ? '⏸️' : '▶️' }}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteShipment(shipment.id)" title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="!loading && shipments.length > 0">
+    <button class="btn btn-secondary" (click)="previousPage()" [disabled]="currentPage === 1">
+      ← Anterior
+    </button>
+    <span class="pagination-info">
+      Página {{ currentPage }} de {{ totalPages }} ({{ totalItems }} registros)
+    </span>
+    <button class="btn btn-secondary" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Siguiente →
+    </button>
+  </div>
+</div>
