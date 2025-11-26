@@ -1,1 +1,289 @@
-<p>shipment-form works!</p>
+<app-navbar></app-navbar>
+
+<div class="container">
+  <div class="header">
+    <h1>{{ editMode ? 'Editar Envío' : 'Nuevo Envío' }}</h1>
+  </div>
+
+  <!-- SPINNER DE CARGA -->
+  <div class="card" *ngIf="loading">
+    <p class="text-center">Cargando...</p>
+  </div>
+
+  <!-- FORMULARIO -->
+  <form [formGroup]="shipmentForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    
+    <!-- SECCIÓN 1: INFORMACIÓN DEL ENVÍO -->
+    <div class="card">
+      <h2>📦 Información del Envío</h2>
+      
+      <div class="form-row">
+        <!-- Número de Seguimiento -->
+        <div class="form-group">
+          <label for="tracking_number">Número de Seguimiento *</label>
+          <input 
+            type="text" 
+            id="tracking_number" 
+            formControlName="tracking_number"
+            placeholder="Ej: TRK-001"
+            class="form-control"
+            [class.invalid]="shipmentForm.get('tracking_number')?.invalid && 
+                             shipmentForm.get('tracking_number')?.touched">
+          <div class="error" 
+               *ngIf="shipmentForm.get('tracking_number')?.invalid && 
+                      shipmentForm.get('tracking_number')?.touched">
+            <small>⚠️ El número de seguimiento es requerido</small>
+          </div>
+        </div>
+
+        <!-- Estado -->
+        <div class="form-group">
+          <label for="status">Estado *</label>
+          <select id="status" formControlName="status" class="form-control">
+            <option *ngFor="let status of statusOptions" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- Origen -->
+        <div class="form-group">
+          <label for="origin">Origen *</label>
+          <input 
+            type="text" 
+            id="origin" 
+            formControlName="origin"
+            placeholder="Ej: Bogotá"
+            class="form-control"
+            [class.invalid]="shipmentForm.get('origin')?.invalid && 
+                             shipmentForm.get('origin')?.touched">
+          <div class="error" *ngIf="shipmentForm.get('origin')?.invalid && 
+                                     shipmentForm.get('origin')?.touched">
+            <small>⚠️ El origen es requerido</small>
+          </div>
+        </div>
+
+        <!-- Destino -->
+        <div class="form-group">
+          <label for="destination">Destino *</label>
+          <input 
+            type="text" 
+            id="destination" 
+            formControlName="destination"
+            placeholder="Ej: Medellín"
+            class="form-control"
+            [class.invalid]="shipmentForm.get('destination')?.invalid && 
+                             shipmentForm.get('destination')?.touched">
+          <div class="error" *ngIf="shipmentForm.get('destination')?.invalid && 
+                                     shipmentForm.get('destination')?.touched">
+            <small>⚠️ El destino es requerido</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: Terceros -->
+    <div class="card">
+      <h2>👥 Terceros</h2>
+
+      <div class="form-row">
+        <!-- Conductor -->
+        <div class="form-group">
+          <label for="third_id_driver">Conductor *</label>
+          <select 
+            id="third_id_driver" 
+            formControlName="third_id_driver" 
+            class="form-control"
+            [class.invalid]="shipmentForm.get('third_id_driver')?.invalid && 
+                             shipmentForm.get('third_id_driver')?.touched">
+            <option [value]="null">-- Seleccione un conductor --</option>
+            <option *ngFor="let third of thirds" [value]="third.id">
+              {{ third.third_name }}
+            </option>
+          </select>
+          <div class="error" *ngIf="shipmentForm.get('third_id_driver')?.invalid && 
+                                     shipmentForm.get('third_id_driver')?.touched">
+            <small>⚠️ El conductor es requerido</small>
+          </div>
+        </div>
+
+        <!-- Remitente -->
+        <div class="form-group">
+          <label for="third_id_remite">Remitente *</label>
+          <select 
+            id="third_id_remite" 
+            formControlName="third_id_remite" 
+            class="form-control"
+            [class.invalid]="shipmentForm.get('third_id_remite')?.invalid && 
+                             shipmentForm.get('third_id_remite')?.touched">
+            <option [value]="null">-- Seleccione un remitente --</option>
+            <option *ngFor="let third of thirds" [value]="third.id">
+              {{ third.third_name }}
+            </option>
+          </select>
+          <div class="error" *ngIf="shipmentForm.get('third_id_remite')?.invalid && 
+                                     shipmentForm.get('third_id_remite')?.touched">
+            <small>⚠️ El remitente es requerido</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- Destinatario -->
+        <div class="form-group">
+          <label for="third_id_destin">Destinatario *</label>
+          <select 
+            id="third_id_destin" 
+            formControlName="third_id_destin" 
+            class="form-control"
+            [class.invalid]="shipmentForm.get('third_id_destin')?.invalid && 
+                             shipmentForm.get('third_id_destin')?.touched">
+            <option [value]="null">-- Seleccione un destinatario --</option>
+            <option *ngFor="let third of thirds" [value]="third.id">
+              {{ third.third_name }}
+            </option>
+          </select>
+          <div class="error" *ngIf="shipmentForm.get('third_id_destin')?.invalid && 
+                                     shipmentForm.get('third_id_destin')?.touched">
+            <small>⚠️ El destinatario es requerido</small>
+          </div>
+        </div>
+
+        <!-- Mercancía -->
+        <div class="form-group">
+          <label for="merchandise_id">Mercancía *</label>
+          <select 
+            id="merchandise_id" 
+            formControlName="merchandise_id" 
+            class="form-control"
+            [class.invalid]="shipmentForm.get('merchandise_id')?.invalid && 
+                             shipmentForm.get('merchandise_id')?.touched">
+            <option [value]="null">-- Seleccione una mercancía --</option>
+            <option *ngFor="let merch of merchandises" [value]="merch.id">
+              {{ merch.mercan_name }}
+            </option>
+          </select>
+          <div class="error" *ngIf="shipmentForm.get('merchandise_id')?.invalid && 
+                                     shipmentForm.get('merchandise_id')?.touched">
+            <small>⚠️ La mercancía es requerida</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: INFORMACIÓN RNDC (OPCIONAL) -->
+    <div class="card">
+      <h2>📋 Información RNDC (Opcional)</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="remesa">Remesa</label>
+          <input 
+            type="text" 
+            id="remesa" 
+            formControlName="remesa" 
+            placeholder="Número de remesa"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="manifiesto">Manifiesto</label>
+          <input 
+            type="text" 
+            id="manifiesto" 
+            formControlName="manifiesto" 
+            placeholder="Número de manifiesto"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="date_manifiesto">Fecha Manifiesto</label>
+          <input 
+            type="date" 
+            id="date_manifiesto" 
+            formControlName="date_manifiesto" 
+            class="form-control">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="plate">Placa del Vehículo</label>
+          <input 
+            type="text" 
+            id="plate" 
+            formControlName="plate" 
+            placeholder="Ej: ABC123"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="weight">Peso (kg)</label>
+          <input 
+            type="number" 
+            id="weight" 
+            formControlName="weight" 
+            placeholder="Ej: 150"
+            min="0"
+            step="0.01"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="declared_price">Precio Declarado ($)</label>
+          <input 
+            type="number" 
+            id="declared_price" 
+            formControlName="declared_price" 
+            placeholder="Ej: 1000000"
+            min="0"
+            step="1000"
+            class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: OBSERVACIONES -->
+    <div class="card">
+      <h2>📝 Observaciones</h2>
+      
+      <div class="form-group">
+        <label for="observation">Observaciones</label>
+        <textarea 
+          id="observation" 
+          formControlName="observation" 
+          class="form-control"
+          rows="4"
+          placeholder="Ingrese observaciones sobre el envío..."></textarea>
+      </div>
+
+      <div class="form-group-checkbox">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="is_active">
+          <span>✅ Envío Activo</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- MENSAJE DE ERROR GENERAL -->
+    <div class="error-message" *ngIf="errorMessage">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="button-group">
+      <button type="button" class="btn btn-secondary" (click)="cancel()">
+        ✖️ Cancelar
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="loading || shipmentForm.invalid">
+        {{ loading ? '⏳ Guardando...' : (editMode ? '💾 Actualizar Envío' : '➕ Crear Envío') }}
+      </button>
+    </div>
+  </form>
+</div>
+
