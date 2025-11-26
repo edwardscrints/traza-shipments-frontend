@@ -55,7 +55,7 @@ export class ShipmentListComponent implements OnInit {
 
   toggleActive(shipment: Shipment): void {
     const action = shipment.is_active ? 
-      this.shipmentService.deactivateShipment(shipment.id) :
+      this.shipmentService.desactivateShipment(shipment.id) :
       this.shipmentService.activateShipment(shipment.id);
 
     action.subscribe({

@@ -21,11 +21,12 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Número de Seguimiento</th>
-          <th>Conductor</th>
-          <th>Remitente</th>
-          <th>Destinatario</th>
-          <th>Mercancía</th>
+          <th>Nro. Seguimiento</th>
+          <th>Origen → Destino</th>
+          <th>Remesa</th>
+          <th>Manifiesto</th>
+          <th>Placa</th>
+          <th>Peso (kg)</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -33,14 +34,25 @@
       <tbody>
         <tr *ngFor="let shipment of shipments">
           <td>{{ shipment.id }}</td>
-          <td>{{ shipment.tracking_number }}</td>
-          <td>{{ shipment.conductor?.third_name || 'N/A' }}</td>
-          <td>{{ shipment.remitente?.third_name || 'N/A' }}</td>
-          <td>{{ shipment.destinatario?.third_name || 'N/A' }}</td>
-          <td>{{ shipment.mercancia?.mercan_name || 'N/A' }}</td>
+          <td><strong>{{ shipment.tracking_number }}</strong></td>
+          <td>
+            <span class="route">
+              {{ shipment.origin }} → {{ shipment.destination }}
+            </span>
+          </td>
+          <td>{{ shipment.remesa || '-' }}</td>
+          <td>{{ shipment.manifiesto || '-' }}</td>
+          <td>
+            <span class="plate" *ngIf="shipment.plate">🚚 {{ shipment.plate }}</span>
+            <span *ngIf="!shipment.plate">-</span>
+          </td>
+          <td>
+            <span *ngIf="shipment.weight">{{ shipment.weight }} kg</span>
+            <span *ngIf="!shipment.weight">-</span>
+          </td>
           <td>
             <span class="badge" [class.badge-success]="shipment.is_active" [class.badge-danger]="!shipment.is_active">
-              {{ shipment.is_active ? 'Activo' : 'Inactivo' }}
+              {{ shipment.is_active ? '✓ Activo' : '✗ Inactivo' }}
             </span>
           </td>
           <td>

@@ -43,3 +43,51 @@ h1 {
   color: #666;
   font-size: 14px;
 }
+
+/* ESTILOS PARA LAS NUEVAS COLUMNAS RNDC */
+.route {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #1976d2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.plate {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  color: #e65100;
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Ajustar ancho de columnas */
+table th:nth-child(1) { width: 50px; }   /* ID */
+table th:nth-child(2) { width: 140px; }  /* Nro. Seguimiento */
+table th:nth-child(3) { width: 180px; }  /* Origen → Destino */
+table th:nth-child(4) { width: 120px; }  /* Remesa */
+table th:nth-child(5) { width: 120px; }  /* Manifiesto */
+table th:nth-child(6) { width: 100px; }  /* Placa */
+table th:nth-child(7) { width: 100px; }  /* Peso */
+table th:nth-child(8) { width: 80px; }   /* Estado */
+table th:nth-child(9) { width: 180px; }  /* Acciones */
+
+/* Hacer el número de seguimiento más destacado */
+td strong {
+  color: #1976d2;
+  font-size: 14px;
+}
+
+/* Alinear columnas numéricas a la derecha */
+table td:nth-child(1),
+table td:nth-child(7) {
+  text-align: center;
+}
