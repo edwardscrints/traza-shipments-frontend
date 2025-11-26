@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Shipment, ShipmentCreateRequest, PaginatedResponse } from '../models/shipment.model';
+import { Shipment, ShipmentCreateRequest, PaginatedResponse, Merchandise, Third } from '../models/shipment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,20 @@ export class ShipmentService {
     return this.http.patch(`${this.apiUrl}/${id}/activate`, {});
   }
 
-  deactivateShipment(id: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}/deactivate`, {});
+  desactivateShipment(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/desactivate`, {});
+  }
+
+  getThirds(): Observable<Third[]> {
+    return this.http.get<Third[]>(`${environment.apiUrl}/thirds`);
+  }
+
+  getMerchandises(): Observable<Merchandise[]> {
+    return this.http.get<Merchandise[]>(`${environment.apiUrl}/merchandises`);
+  }
+
+  // Método público para rastreo (no requiere autenticación)
+  getShipmentByTrackingNumber(trackingNumber: string): Observable<Shipment> {
+    return this.http.get<Shipment>(`${environment.apiUrl}/tracking/${trackingNumber}`);
   }
 }
